@@ -1,6 +1,6 @@
 CMake_Minimum_Required(VERSION 2.6)
 
-Project(sdl_test)
+Project(PacMan)
 Set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 Find_Package(SDL REQUIRED)
@@ -16,4 +16,4 @@ Link_Libraries (
 
 File(GLOB_RECURSE source_files src/*)
 
-Add_Executable(sdl_test ${source_files})
+Add_Executable(PacMan ${source_files})
