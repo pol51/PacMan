@@ -15,7 +15,16 @@ int main(int argc, char *argv[])
   SDL_Surface *background = IMG_Load("../res/background.png");
 
   Sprite PacMan("../res/pacman.png");
-  Sprite Ghost("../res/ghost_blue.png");
+
+  Sprite GhostBlue("../res/ghost_blue.png");
+  Sprite GhostOrange("../res/ghost_orange.png");
+  Sprite GhostPink("../res/ghost_pink.png");
+  Sprite GhostRed("../res/ghost_red.png");
+
+  GhostBlue.MoveRight(SPRITE_WIDTH<<1);
+  GhostOrange.MoveRight(SPRITE_WIDTH<<2);
+  GhostPink.MoveDown(SPRITE_HEIGHT<<2);
+  GhostRed.MoveDown(SPRITE_HEIGHT<<1);
 
   int keyDown = 0;
 
@@ -67,7 +76,12 @@ int main(int argc, char *argv[])
 
     //draw
     SDL_BlitSurface(background, NULL, screen, NULL);
-    Ghost.Draw(screen);
+
+    GhostBlue.Draw(screen);
+    GhostOrange.Draw(screen);
+    GhostPink.Draw(screen);
+    GhostRed.Draw(screen);
+
     PacMan.Draw(screen);
     PacMan.IncStep();
     SDL_Flip(screen);
