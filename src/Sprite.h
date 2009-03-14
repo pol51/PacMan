@@ -12,6 +12,9 @@ class Sprite
     SDL_Surface *_map;
     SDL_Rect _src;
     SDL_Rect _dest;
+    unsigned short int _imageCount;
+    unsigned short int _imageIndex;
+    short _imageInc;
 
   public:
     /*!
@@ -76,6 +79,13 @@ class Sprite
       _dest.y += offset;
     }
 
+    void IncStep()
+    {
+      _imageIndex = _imageIndex + _imageInc;
+      if (_imageIndex == _imageCount - 1) _imageInc = -1;
+      if (_imageIndex == 0) _imageInc = 1;
+      _src.y = _imageIndex * SPRITE_HEIGHT;
+    }
 };
 
 #endif

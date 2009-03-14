@@ -14,7 +14,8 @@ int main(int argc, char *argv[])
   
   SDL_Surface *background = IMG_Load("../res/background.png");
 
-  Sprite PacMan("../res/pac-man.png");
+  Sprite PacMan("../res/pacman.png");
+  Sprite Ghost("../res/ghost_blue.png");
 
   int keyDown = 0;
 
@@ -66,7 +67,9 @@ int main(int argc, char *argv[])
 
     //draw
     SDL_BlitSurface(background, NULL, screen, NULL);
+    Ghost.Draw(screen);
     PacMan.Draw(screen);
+    PacMan.IncStep();
     SDL_Flip(screen);
 
     while (!T.IsFPSReached());
