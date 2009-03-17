@@ -2,6 +2,9 @@
 #include <Sprite.h>
 #include <Timer.h>
 
+// Basics
+#include <cstdlib>
+
 // SDL
 #include <SDL.h>
 #include <SDL_image.h>
