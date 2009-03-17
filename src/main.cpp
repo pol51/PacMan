@@ -14,6 +14,17 @@ int main(int argc, char *argv[])
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
   SDL_Surface *screen = SDL_SetVideoMode(
     GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+  if (!screen)
+  {
+    fprintf(stderr, "Can't initialize screen in 32 bits, trying 16");
+    screen = SDL_SetVideoMode(
+      GAME_WIDTH, GAME_HEIGHT, 16, SDL_HWSURFACE | SDL_DOUBLEBUF);
+    if (!screen)
+    {
+      fprintf(stderr, "Can't initialize screen in 16 bits, exiting");
+      exit(EXIT_FAILURE);
+    }
+  }
   
   SDL_Surface *background = IMG_Load("../res/background.png");
 
