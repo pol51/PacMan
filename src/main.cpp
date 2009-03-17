@@ -16,12 +16,12 @@ int main(int argc, char *argv[])
     GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   if (!screen)
   {
-    fprintf(stderr, "Can't initialize screen in 32 bits, trying 16");
+    fprintf(stderr, "Can't initialize screen in 32 bits, trying 16\n");
     screen = SDL_SetVideoMode(
       GAME_WIDTH, GAME_HEIGHT, 16, SDL_HWSURFACE | SDL_DOUBLEBUF);
     if (!screen)
     {
-      fprintf(stderr, "Can't initialize screen in 16 bits, exiting");
+      fprintf(stderr, "Can't initialize screen in 16 bits, exiting\n");
       exit(EXIT_FAILURE);
     }
   }
