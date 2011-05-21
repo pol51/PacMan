@@ -27,7 +27,10 @@ class Timer
     /*!
     * @brief Stop the timer
     */
-    void Stop() { _started = false; }
+    void Stop()
+    {
+      _started = false;
+    }
 
     /*!
     * @brief Is FPS Reached

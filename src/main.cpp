@@ -13,19 +13,19 @@ int main(int argc, char *argv[])
 {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
   SDL_Surface *screen = SDL_SetVideoMode(
-    GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+                          GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   if (!screen)
   {
     fprintf(stderr, "Can't initialize screen in 32 bits, trying 16\n");
     screen = SDL_SetVideoMode(
-      GAME_WIDTH, GAME_HEIGHT, 16, SDL_HWSURFACE | SDL_DOUBLEBUF);
+               GAME_WIDTH, GAME_HEIGHT, 16, SDL_HWSURFACE | SDL_DOUBLEBUF);
     if (!screen)
     {
       fprintf(stderr, "Can't initialize screen in 16 bits, exiting\n");
       exit(EXIT_FAILURE);
     }
   }
-  
+
   SDL_Surface *background = IMG_Load("../res/background.png");
 
   Sprite PacMan("../res/pacman.png");
@@ -35,25 +35,25 @@ int main(int argc, char *argv[])
   Sprite GhostPink("../res/ghost_pink.png");
   Sprite GhostRed("../res/ghost_red.png");
 
-  GhostBlue.MoveRight(SPRITE_WIDTH<<1);
-  GhostOrange.MoveRight(SPRITE_WIDTH<<2);
-  GhostPink.MoveDown(SPRITE_HEIGHT<<2);
-  GhostRed.MoveDown(SPRITE_HEIGHT<<1);
+  GhostBlue.MoveRight(SPRITE_WIDTH << 1);
+  GhostOrange.MoveRight(SPRITE_WIDTH << 2);
+  GhostPink.MoveDown(SPRITE_HEIGHT << 2);
+  GhostRed.MoveDown(SPRITE_HEIGHT << 1);
 
   int keyDown = 0;
 
   SDL_Event event, lastEvent, emptyEvent;
   Timer T(25);
   bool inGame = true;
-  while(inGame)
+  while (inGame)
   {
     //update timer
     T.Start();
 
     //events
-    while(SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event))
     {
-      switch(event.type)
+      switch (event.type)
       {
         case SDL_KEYDOWN:
           if ((unsigned int)(event.key.keysym.sym - 273) < 5)
@@ -68,23 +68,23 @@ int main(int argc, char *argv[])
           break;
       }
     }
-    
-    switch(lastEvent.key.keysym.sym)
+
+    switch (lastEvent.key.keysym.sym)
     {
       case 27:  // exit
         inGame = false;
         break;
       case 273: // up
-        PacMan.MoveUp(PacMan.Top()>0?PacMan.Height()>>2:0);
+        PacMan.MoveUp(PacMan.Top() > 0 ? PacMan.Height() >> 2 : 0);
         break;
       case 274: // down
-        PacMan.MoveDown(PacMan.Bottom()<GAME_HEIGHT?PacMan.Height()>>2:0);
+        PacMan.MoveDown(PacMan.Bottom() < GAME_HEIGHT ? PacMan.Height() >> 2 : 0);
         break;
       case 275: // right
-        PacMan.MoveRight(PacMan.Right()<GAME_WIDTH?PacMan.Width()>>2:0);
+        PacMan.MoveRight(PacMan.Right() < GAME_WIDTH ? PacMan.Width() >> 2 : 0);
         break;
       case 276: // left
-        PacMan.MoveLeft(PacMan.Left()>0?PacMan.Width()>>2:0);
+        PacMan.MoveLeft(PacMan.Left() > 0 ? PacMan.Width() >> 2 : 0);
         break;
     }
 
@@ -105,6 +105,6 @@ int main(int argc, char *argv[])
 
   SDL_FreeSurface(screen);
   SDL_FreeSurface(background);
-  
+
   return EXIT_SUCCESS;
 }
