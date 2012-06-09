@@ -11,7 +11,8 @@ protected:
     EDirection _direction;
     SDL_Surface *_map;
     SDL_Rect _src;
-    SDL_Rect _dest;
+    SDL_Rect _pos;
+    SDL_Rect _dst;
     unsigned short int _imageCount;
     unsigned short int _imageIndex;
     short _imageInc;
@@ -38,10 +39,12 @@ public:
     */
     unsigned int Width()  const { return _src.w; }
     unsigned int Height() const { return _src.h; }
-    unsigned int Left()   const { return _dest.x; }
-    unsigned int Right()  const { return _dest.x + _src.w; }
-    unsigned int Top()    const { return _dest.y; }
-    unsigned int Bottom() const { return _dest.y + _src.h; }
+    unsigned int Left()   const { return _pos.x; }
+    unsigned int Right()  const { return _pos.x + _src.w; }
+    unsigned int Top()    const { return _pos.y; }
+    unsigned int Bottom() const { return _pos.y + _src.h; }
+
+    bool InMove() const { return _pos.x != _dst.x || _pos.y != _dst.y; }
 
     void Direction(const EDirection direction)
     {
@@ -51,32 +54,44 @@ public:
 
     void Position(const unsigned int x, const unsigned int y)
     {
-        _dest.x = x;
-        _dest.y = y;
+        _pos.x = _dst.x = x;
+        _pos.y = _dst.y = y;
     }
 
     void MoveLeft(const unsigned int offset)
     {
-        Direction(eLeft);
-        _dest.x -= offset;
+        if (!InMove())
+        {
+            Direction(eLeft);
+            _dst.x -= offset;
+        }
     }
 
     void MoveRight(const unsigned int offset)
     {
-        Direction(eRight);
-        _dest.x += offset;
+        if (!InMove())
+        {
+            Direction(eRight);
+            _dst.x += offset;
+        }
     }
 
     void MoveUp(const unsigned int offset)
     {
-        Direction(eUp);
-        _dest.y -= offset;
+        if (!InMove())
+        {
+            Direction(eUp);
+            _dst.y -= offset;
+        }
     }
 
     void MoveDown(const unsigned int offset)
     {
-        Direction(eDown);
-        _dest.y += offset;
+        if (!InMove())
+        {
+            Direction(eDown);
+            _dst.y += offset;
+        }
     }
 
     void IncStep()

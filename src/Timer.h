@@ -15,11 +15,6 @@ class Timer
     Timer(const unsigned int fps): _startTicks(0), _fps(fps), _started(false) {}
 
     /*!
-    * @brief dtor
-    */
-    ~Timer() {};
-
-    /*!
     * @brief Start the timer
     */
     void Start();

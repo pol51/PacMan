@@ -9,7 +9,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-int main(int argc, char *argv[])
+int main(int, char **)
 {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
   SDL_Surface *screen = SDL_SetVideoMode(
@@ -27,6 +27,11 @@ int main(int argc, char *argv[])
   }
 
   SDL_Surface *background = IMG_Load("../res/background.png");
+  if (!background)
+  {
+    fprintf(stderr, "Can't load images, exiting\n");
+    exit(EXIT_FAILURE);
+  }
 
   Sprite PacMan("../res/pacman.png");
 
@@ -43,7 +48,7 @@ int main(int argc, char *argv[])
   int keyDown = 0;
 
   SDL_Event event, lastEvent, emptyEvent;
-  Timer T(25);
+  Timer T(30);
   bool inGame = true;
   while (inGame)
   {
@@ -75,16 +80,16 @@ int main(int argc, char *argv[])
         inGame = false;
         break;
       case 273: // up
-        PacMan.MoveUp(PacMan.Top() > 0 ? PacMan.Height() >> 2 : 0);
+        PacMan.MoveUp(PacMan.Top() > 0 ? PacMan.Height() : 0);
         break;
       case 274: // down
-        PacMan.MoveDown(PacMan.Bottom() < GAME_HEIGHT ? PacMan.Height() >> 2 : 0);
+        PacMan.MoveDown(PacMan.Bottom() < GAME_HEIGHT ? PacMan.Height() : 0);
         break;
       case 275: // right
-        PacMan.MoveRight(PacMan.Right() < GAME_WIDTH ? PacMan.Width() >> 2 : 0);
+        PacMan.MoveRight(PacMan.Right() < GAME_WIDTH ? PacMan.Width() : 0);
         break;
       case 276: // left
-        PacMan.MoveLeft(PacMan.Left() > 0 ? PacMan.Width() >> 2 : 0);
+        PacMan.MoveLeft(PacMan.Left() > 0 ? PacMan.Width() : 0);
         break;
     }
 
