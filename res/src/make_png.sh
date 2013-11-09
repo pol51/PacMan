@@ -13,3 +13,6 @@ montage -background "transparent" ghost_blue_{left,up,right,down}.svg -geometry 
 montage -background "transparent" ghost_orange_{left,up,right,down}.svg -geometry 40x40 -tile 4x1 -matte -transparent "transparent" ../ghost_orange.png
 montage -background "transparent" ghost_pink_{left,up,right,down}.svg -geometry 40x40 -tile 4x1 -matte -transparent "transparent" ../ghost_pink.png
 montage -background "transparent" ghost_red_{left,up,right,down}.svg -geometry 40x40 -tile 4x1 -matte -transparent "transparent" ../ghost_red.png
+
+#walls
+montage -background "transparent" wall.svg -geometry 40x40 -tile 1x1 -matte -transparent "transparent" ../wall.png

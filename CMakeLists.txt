@@ -7,6 +7,8 @@ find_package(SDL_image REQUIRED)
 
 include_directories(${SDL_INCLUDE_DIR} src)
 
+add_definitions(-std=c++11)
+
 link_libraries (
   ${SDL_LIBRARY}
   ${SDLIMAGE_LIBRARY}
@@ -23,7 +25,12 @@ file(GLOB_RECURSE resource_files res/*.png)
 
 execute_process(
   COMMAND mkdir -p res
-  COMMAND cp -rf ${resource_files} res)
+  COMMAND cp -f ${resource_files} res)
 
+file(GLOB_RECURSE data_files data/*)
+
+execute_process(
+  COMMAND mkdir -p data
+  COMMAND cp -f ${data_files} data)
 
 add_executable(PacMan ${source_files})

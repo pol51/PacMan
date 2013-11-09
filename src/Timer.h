@@ -4,15 +4,15 @@
 class Timer
 {
   protected:
-    int _startTicks;
-    unsigned int _fps;
-    bool _started;
+    int _startTicks = 0;
+    unsigned int _fps = 30;
+    bool _started = false;
 
   public:
     /*!
     * @brief ctor
     */
-    Timer(const unsigned int fps): _startTicks(0), _fps(fps), _started(false) {}
+    Timer(const unsigned int fps): _fps(fps) {}
 
     /*!
     * @brief Start the timer

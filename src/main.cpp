@@ -1,106 +1,13 @@
-#include <Def.h>
-#include <Sprite.h>
-#include <Timer.h>
-
-// Basics
-#include <cstdlib>
-
-// SDL
-#include <SDL.h>
-#include <SDL_image.h>
+#include "Def.h"
+#include "Sprite.h"
+#include "Timer.h"
+#include "Game.h"
 
 int main(int, char **)
 {
-  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-  SDL_Surface *screen = SDL_SetVideoMode(GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-  if (!screen)
-  {
-    fprintf(stderr, "Can't initialize screen in 32 bits, trying 16\n");
-    screen = SDL_SetVideoMode(
-               GAME_WIDTH, GAME_HEIGHT, 16, SDL_HWSURFACE | SDL_DOUBLEBUF);
-    if (!screen)
-    {
-      fprintf(stderr, "Can't initialize screen in 16 bits, exiting\n");
-      exit(EXIT_FAILURE);
-    }
-  }
+  SDL_Init(SDL_INIT_VIDEO);
 
-  Sprite PacMan("res/pacman.png");
-
-  Sprite GhostBlue("res/ghost_blue.png");
-  Sprite GhostOrange("res/ghost_orange.png");
-  Sprite GhostPink("res/ghost_pink.png");
-  Sprite GhostRed("res/ghost_red.png");
-
-  GhostBlue.MoveRight(SPRITE_WIDTH << 1);
-  GhostOrange.MoveRight(SPRITE_WIDTH << 2);
-  GhostPink.MoveDown(SPRITE_HEIGHT << 2);
-  GhostRed.MoveDown(SPRITE_HEIGHT << 1);
-
-  int keyDown = 0;
-
-  SDL_Event event, lastEvent, emptyEvent;
-  Timer T(30);
-  bool inGame = true;
-  while (inGame)
-  {
-    //update timer
-    T.Start();
-
-    //events
-    while (SDL_PollEvent(&event))
-    {
-      switch (event.type)
-      {
-        case SDL_KEYDOWN:
-          if ((unsigned int)(event.key.keysym.sym - 273) < 5)
-            keyDown++;
-          lastEvent = event;
-          break;
-        case SDL_KEYUP:
-          if ((unsigned int)(event.key.keysym.sym - 273) < 5)
-            keyDown--;
-          if (keyDown == 0)
-            lastEvent = emptyEvent;
-          break;
-      }
-    }
-
-    switch (lastEvent.key.keysym.sym)
-    {
-      case 27:  // exit
-        inGame = false;
-        break;
-      case 273: // up
-        PacMan.MoveUp(PacMan.Top() > 0 ? PacMan.Height() : 0);
-        break;
-      case 274: // down
-        PacMan.MoveDown(PacMan.Bottom() < GAME_HEIGHT ? PacMan.Height() : 0);
-        break;
-      case 275: // right
-        PacMan.MoveRight(PacMan.Right() < GAME_WIDTH ? PacMan.Width() : 0);
-        break;
-      case 276: // left
-        PacMan.MoveLeft(PacMan.Left() > 0 ? PacMan.Width() : 0);
-        break;
-    }
-
-    //draw
-    SDL_FillRect(screen, NULL, 0);
-
-    GhostBlue.Draw(screen);
-    GhostOrange.Draw(screen);
-    GhostPink.Draw(screen);
-    GhostRed.Draw(screen);
-
-    PacMan.Draw(screen);
-    PacMan.IncStep();
-    SDL_Flip(screen);
-
-    while (!T.IsFPSReached());
-  }
-
-  SDL_FreeSurface(screen);
+  Game("data/default_level.txt").run();
 
   return EXIT_SUCCESS;
 }
