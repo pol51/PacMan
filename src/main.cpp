@@ -12,8 +12,7 @@
 int main(int, char **)
 {
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-  SDL_Surface *screen = SDL_SetVideoMode(
-                          GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+  SDL_Surface *screen = SDL_SetVideoMode(GAME_WIDTH, GAME_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   if (!screen)
   {
     fprintf(stderr, "Can't initialize screen in 32 bits, trying 16\n");
@@ -26,19 +25,12 @@ int main(int, char **)
     }
   }
 
-  SDL_Surface *background = IMG_Load("../res/background.png");
-  if (!background)
-  {
-    fprintf(stderr, "Can't load images, exiting\n");
-    exit(EXIT_FAILURE);
-  }
+  Sprite PacMan("res/pacman.png");
 
-  Sprite PacMan("../res/pacman.png");
-
-  Sprite GhostBlue("../res/ghost_blue.png");
-  Sprite GhostOrange("../res/ghost_orange.png");
-  Sprite GhostPink("../res/ghost_pink.png");
-  Sprite GhostRed("../res/ghost_red.png");
+  Sprite GhostBlue("res/ghost_blue.png");
+  Sprite GhostOrange("res/ghost_orange.png");
+  Sprite GhostPink("res/ghost_pink.png");
+  Sprite GhostRed("res/ghost_red.png");
 
   GhostBlue.MoveRight(SPRITE_WIDTH << 1);
   GhostOrange.MoveRight(SPRITE_WIDTH << 2);
@@ -94,7 +86,7 @@ int main(int, char **)
     }
 
     //draw
-    SDL_BlitSurface(background, NULL, screen, NULL);
+    SDL_FillRect(screen, NULL, 0);
 
     GhostBlue.Draw(screen);
     GhostOrange.Draw(screen);
@@ -109,7 +101,6 @@ int main(int, char **)
   }
 
   SDL_FreeSurface(screen);
-  SDL_FreeSurface(background);
 
   return EXIT_SUCCESS;
 }

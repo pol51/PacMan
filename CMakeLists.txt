@@ -1,19 +1,29 @@
-CMake_Minimum_Required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 
-Project(PacMan)
-Set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+project(PacMan)
 
-Find_Package(SDL REQUIRED)
-Find_Package(SDL_image REQUIRED)
+find_package(SDL REQUIRED)
+find_package(SDL_image REQUIRED)
 
-Include_Directories(${SDL_INCLUDE_DIR} src)
+include_directories(${SDL_INCLUDE_DIR} src)
 
-Link_Libraries (
+link_libraries (
   ${SDL_LIBRARY}
   ${SDLIMAGE_LIBRARY}
   SDLmain
 )
 
-File(GLOB_RECURSE source_files src/*)
+file(GLOB_RECURSE source_files src/*)
 
-Add_Executable(PacMan ${source_files})
+execute_process(
+  COMMAND ../make_png.sh
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/res/src)
+
+file(GLOB_RECURSE resource_files res/*.png)
+
+execute_process(
+  COMMAND mkdir -p res
+  COMMAND cp -rf ${resource_files} res)
+
+
+add_executable(PacMan ${source_files})

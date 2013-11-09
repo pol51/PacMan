@@ -1,7 +1,7 @@
 #ifndef __DEF_H__
 #define __DEF_H__
 
-#define GAME_WIDTH  480
+#define GAME_WIDTH  640
 #define GAME_HEIGHT 480
 
 #define SPRITE_WIDTH  40
