@@ -45,6 +45,12 @@ void Game::addSprite(const char type, const unsigned int x, const unsigned y)
     case '#':
       _walls.push(Sprite("res/wall.png", x*SPRITE_WIDTH, y*SPRITE_HEIGHT));
       break;
+    case '.':
+      _smallPills.push(Sprite("res/pill_small.png", x*SPRITE_WIDTH, y*SPRITE_HEIGHT));
+      break;
+    case '*':
+      _bigPills.push(Sprite("res/pill_big.png", x*SPRITE_WIDTH, y*SPRITE_HEIGHT));
+      break;
     case 'A':
       _pacman = Sprite("res/pacman.png", x*SPRITE_WIDTH, y*SPRITE_HEIGHT);
       break;
@@ -82,74 +88,78 @@ void Game::createScreen()
 
 void Game::draw()
 {
+  SDL_FillRect(_screen, NULL, 0);
+
   for (int i = _walls.size(); --i >= 0; )
     _walls[i].draw(_screen);
-
-  _pacman.draw(_screen);
-  _pacman.incStep();
+  for (int i = _smallPills.size(); --i >= 0; )
+    _smallPills[i].draw(_screen);
+  for (int i = _bigPills.size(); --i >= 0; )
+    _bigPills[i].draw(_screen);
 
   _blueGhost.draw(_screen);
   _orangeGhost.draw(_screen);
   _pinkGhost.draw(_screen);
   _redGhost.draw(_screen);
+
+  _pacman.draw(_screen);
+  _pacman.incStep();
+
+  SDL_Flip(_screen);
+}
+
+void Game::handleKeys()
+{
+  SDL_Event Event;
+  while (SDL_PollEvent(&Event))
+  {
+    switch (Event.type)
+    {
+      case SDL_KEYDOWN:
+        if ((unsigned int)(Event.key.keysym.sym - 273) < 5)
+          _keyDown++;
+        _lastEvent = Event;
+        break;
+      case SDL_KEYUP:
+        if ((unsigned int)(Event.key.keysym.sym - 273) < 5)
+          _keyDown--;
+        if (!_keyDown)
+          _lastEvent = SDL_Event();
+        break;
+    }
+  }
+
+  switch (_lastEvent.key.keysym.sym)
+  {
+    case 27:  // exit
+      _running = false;
+      break;
+    case 273: // up
+      _pacman.moveUp(_pacman.top() > 0 ? SPRITE_HEIGHT : 0);
+      break;
+    case 274: // down
+      _pacman.moveDown(_pacman.bottom() < _heigth * SPRITE_HEIGHT ? SPRITE_HEIGHT : 0);
+      break;
+    case 275: // right
+      _pacman.moveRight(_pacman.right() < _width * SPRITE_WIDTH ? SPRITE_WIDTH : 0);
+      break;
+    case 276: // left
+      _pacman.moveLeft(_pacman.left() > 0 ? SPRITE_WIDTH : 0);
+      break;
+  }
 }
 
 void Game::run()
 {
-  int KeyDown = 0;
-  SDL_Event Event, LastEvent;
   Timer T(30);
-  bool InGame = true;
 
-  while (InGame)
+  _running = true;
+  while (_running)
   {
-    //update timer
     T.Start();
 
-    //events
-    while (SDL_PollEvent(&Event))
-    {
-      switch (Event.type)
-      {
-        case SDL_KEYDOWN:
-          if ((unsigned int)(Event.key.keysym.sym - 273) < 5)
-            KeyDown++;
-          LastEvent = Event;
-          break;
-        case SDL_KEYUP:
-          if ((unsigned int)(Event.key.keysym.sym - 273) < 5)
-            KeyDown--;
-          if (KeyDown == 0)
-            LastEvent = SDL_Event();
-          break;
-      }
-    }
-
-    switch (LastEvent.key.keysym.sym)
-    {
-      case 27:  // exit
-        InGame = false;
-        break;
-      case 273: // up
-        _pacman.moveUp(_pacman.top() > 0 ? SPRITE_HEIGHT : 0);
-        break;
-      case 274: // down
-        _pacman.moveDown(_pacman.bottom() < _heigth * SPRITE_HEIGHT ? SPRITE_HEIGHT : 0);
-        break;
-      case 275: // right
-        _pacman.moveRight(_pacman.right() < _width * SPRITE_WIDTH ? SPRITE_WIDTH : 0);
-        break;
-      case 276: // left
-        _pacman.moveLeft(_pacman.left() > 0 ? SPRITE_WIDTH : 0);
-        break;
-    }
-
-    //draw
-    SDL_FillRect(_screen, NULL, 0);
-
+    handleKeys();
     draw();
-
-    SDL_Flip(_screen);
 
     while (!T.IsFPSReached());
   }

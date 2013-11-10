@@ -10,8 +10,6 @@ class Game
     Game(const char *filename);
     ~Game();
 
-    void draw();
-
     void run();
 
     SDL_Surface *screen() {return _screen;}
@@ -21,14 +19,23 @@ class Game
   protected:
     void addSprite(const char type, const unsigned int x, const unsigned y);
     void createScreen();
+    void draw();
+    void handleKeys();
 
   protected:
+    bool _running{false};
+
     unsigned int _width{0};
     unsigned int _heigth{0};
+
+    int _keyDown{0};
+    SDL_Event _lastEvent;
 
     SDL_Surface *_screen{NULL};
 
     XVector<Sprite> _walls;
+    XVector<Sprite> _smallPills;
+    XVector<Sprite> _bigPills;
     Sprite  _pacman{Sprite::null};
     Sprite  _blueGhost{Sprite::null};
     Sprite  _orangeGhost{Sprite::null};

@@ -16,3 +16,7 @@ montage -background "transparent" ghost_red_{left,up,right,down}.svg -geometry 4
 
 #walls
 montage -background "transparent" wall.svg -geometry 40x40 -tile 1x1 -matte -transparent "transparent" ../wall.png
+
+#pills
+montage -background "transparent" pill_small.svg -geometry 40x40 -tile 1x1 -matte -transparent "transparent" ../pill_small.png
+montage -background "transparent" pill_big.svg -geometry 40x40 -tile 1x1 -matte -transparent "transparent" ../pill_big.png
