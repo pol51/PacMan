@@ -1,6 +1,3 @@
-#include "Def.h"
-#include "Sprite.h"
-#include "Timer.h"
 #include "Game.h"
 
 int main(int, char **)

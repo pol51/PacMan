@@ -36,11 +36,11 @@ class Game
     XVector<Sprite> _walls;
     XVector<Sprite> _smallPills;
     XVector<Sprite> _bigPills;
-    Sprite  _pacman{Sprite::null};
-    Sprite  _blueGhost{Sprite::null};
-    Sprite  _orangeGhost{Sprite::null};
-    Sprite  _pinkGhost{Sprite::null};
-    Sprite  _redGhost{Sprite::null};
+    Sprite  _pacman         = Sprite::null;
+    Sprite  _blueGhost      = Sprite::null;
+    Sprite  _orangeGhost    = Sprite::null;
+    Sprite  _pinkGhost      = Sprite::null;
+    Sprite  _redGhost       = Sprite::null;
 };
 
 #endif

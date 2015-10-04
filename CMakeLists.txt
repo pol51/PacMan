@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 project(PacMan)
 
@@ -19,7 +19,7 @@ file(GLOB_RECURSE source_files src/*)
 
 execute_process(
   COMMAND ../make_png.sh
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/res/src)
+  WORKING_DIRECTORY res/src)
 
 file(GLOB_RECURSE resource_files res/*.png)
 
@@ -27,10 +27,12 @@ execute_process(
   COMMAND mkdir -p res
   COMMAND cp -f ${resource_files} res)
 
-file(GLOB_RECURSE data_files data/*)
+file(GLOB_RECURSE data_files data/*.txt)
+
+file(GLOB_RECURSE resource_source_files res/*.svg res/*.sh)
 
 execute_process(
   COMMAND mkdir -p data
   COMMAND cp -f ${data_files} data)
 
-add_executable(PacMan ${source_files})
+add_executable(PacMan ${source_files} ${data_files} ${resource_source_files})

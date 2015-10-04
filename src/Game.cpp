@@ -1,10 +1,6 @@
 #include "Game.h"
 
-#include "Def.h"
 #include "Timer.h"
-
-#include <cstdio>
-#include <cstdlib>
 
 Game::Game(const char *filename)
 {
@@ -15,17 +11,17 @@ Game::Game(const char *filename)
     exit(EXIT_FAILURE);
   }
 
-  char Line[1024];
+  char Line[1024], *C;
   unsigned int X{0}, Y{0};
   while (fgets(Line, 1024, File))
   {
     X = 0;
-    for (char *C{Line}; *C; ++C, ++X)
+    for (C = Line; *C; ++C, ++X)
       addSprite(*C, X, Y);
     ++Y;
   }
 
-  _width = X;
+  _width = X - (Y && *(C-1) == '\n'); // ignore new-line
   _heigth = Y;
 
   fclose(File);

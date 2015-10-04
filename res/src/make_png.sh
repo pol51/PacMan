@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #pacman
 montage -background "transparent" pacman_right_*.svg -geometry 40x40 -tile 1x6 -matte -transparent "transparent" pacman_right.png
