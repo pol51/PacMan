@@ -27,14 +27,16 @@ Sprite::~Sprite()
   SurfacesManager::freeSurface(_map);
 }
 
-void Sprite::draw(SDL_Surface *surface)
+void Sprite::draw(SDL_Renderer *renderer)
 {
   if (_pos.x < _dst.x) _pos.x += _src.w>>3;
   if (_pos.x > _dst.x) _pos.x -= _src.w>>3;
   if (_pos.y < _dst.y) _pos.y += _src.h>>3;
   if (_pos.y > _dst.y) _pos.y -= _src.h>>3;
 
-  SDL_BlitSurface(_map, &_src, surface, &_pos);
+  SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, _map);
+  SDL_RenderCopy(renderer, tex, &_src, &_pos);
+  SDL_DestroyTexture(tex);
 }
 
 const Sprite &Sprite::operator=(const Sprite& other)
@@ -47,4 +49,6 @@ const Sprite &Sprite::operator=(const Sprite& other)
   _imageCount = other._imageCount;
   _imageIndex = other._imageIndex;
   _imageInc   = other._imageInc;
+
+  return *this;
 }

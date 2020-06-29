@@ -1,19 +1,12 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.10)
 
 project(PacMan)
 
-find_package(SDL REQUIRED)
-find_package(SDL_image REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 
-include_directories(${SDL_INCLUDE_DIR} src)
-
-add_definitions(-std=c++11)
-
-link_libraries (
-  ${SDL_LIBRARY}
-  ${SDLIMAGE_LIBRARY}
-  SDLmain
-)
+include_directories(${SDL2_INCLUDE_DIR} src)
 
 file(GLOB_RECURSE source_files src/*)
 
@@ -36,3 +29,4 @@ execute_process(
   COMMAND cp -f ${data_files} data)
 
 add_executable(PacMan ${source_files} ${data_files} ${resource_source_files})
+target_link_libraries(PacMan SDL2::Main SDL2::Image)

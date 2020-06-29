@@ -32,6 +32,7 @@ Game::Game(const char *filename)
 Game::~Game()
 {
   SDL_FreeSurface(_screen);
+  SDL_DestroyWindow(_window);
 }
 
 void Game::addSprite(const char type, const unsigned int x, const unsigned y)
@@ -69,39 +70,36 @@ void Game::addSprite(const char type, const unsigned int x, const unsigned y)
 
 void Game::createScreen()
 {
-  _screen = SDL_SetVideoMode(_width * SPRITE_WIDTH, _heigth * SPRITE_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-  if (!_screen)
-  {
-    fprintf(stderr, "Can't initialize screen in 32 bits, trying 16\n");
-    _screen = SDL_SetVideoMode(_width * SPRITE_WIDTH, _heigth * SPRITE_HEIGHT, 16, SDL_HWSURFACE | SDL_DOUBLEBUF);
-    if (!_screen)
-    {
-      fprintf(stderr, "Can't initialize screen in 16 bits, exiting\n");
-      exit(EXIT_FAILURE);
-    }
-  }
+  _window = SDL_CreateWindow("PacMan",
+    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    _width * SPRITE_WIDTH, _heigth * SPRITE_HEIGHT,
+    SDL_WINDOW_SHOWN);
+  _screen = SDL_GetWindowSurface(_window);
+
+  _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 void Game::draw()
 {
-  SDL_FillRect(_screen, NULL, 0);
+  SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
+  SDL_RenderClear(_renderer);
 
   for (int i = _walls.size(); --i >= 0; )
-    _walls[i].draw(_screen);
+    _walls[i].draw(_renderer);
   for (int i = _smallPills.size(); --i >= 0; )
-    _smallPills[i].draw(_screen);
+    _smallPills[i].draw(_renderer);
   for (int i = _bigPills.size(); --i >= 0; )
-    _bigPills[i].draw(_screen);
+    _bigPills[i].draw(_renderer);
 
-  _blueGhost.draw(_screen);
-  _orangeGhost.draw(_screen);
-  _pinkGhost.draw(_screen);
-  _redGhost.draw(_screen);
+  _blueGhost.draw(_renderer);
+  _orangeGhost.draw(_renderer);
+  _pinkGhost.draw(_renderer);
+  _redGhost.draw(_renderer);
 
-  _pacman.draw(_screen);
+  _pacman.draw(_renderer);
   _pacman.incStep();
 
-  SDL_Flip(_screen);
+  SDL_RenderPresent(_renderer);
 }
 
 void Game::handleKeys()
@@ -122,24 +120,27 @@ void Game::handleKeys()
         if (!_keyDown)
           _lastEvent = SDL_Event();
         break;
+      case SDL_QUIT:
+        _running = false;
+        return;
     }
   }
 
   switch (_lastEvent.key.keysym.sym)
   {
-    case 27:  // exit
+    case SDLK_ESCAPE:  // exit
       _running = false;
       break;
-    case 273: // up
+    case SDLK_UP: // up
       _pacman.moveUp(_pacman.top() > 0 ? SPRITE_HEIGHT : 0);
       break;
-    case 274: // down
+    case SDLK_DOWN: // down
       _pacman.moveDown(_pacman.bottom() < _heigth * SPRITE_HEIGHT ? SPRITE_HEIGHT : 0);
       break;
-    case 275: // right
+    case SDLK_RIGHT: // right
       _pacman.moveRight(_pacman.right() < _width * SPRITE_WIDTH ? SPRITE_WIDTH : 0);
       break;
-    case 276: // left
+    case SDLK_LEFT: // left
       _pacman.moveLeft(_pacman.left() > 0 ? SPRITE_WIDTH : 0);
       break;
   }

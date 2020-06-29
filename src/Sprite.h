@@ -25,7 +25,7 @@ class Sprite
     * @brief Draw the sprite to surface
     * @param surface the destination surface
     */
-    void draw(SDL_Surface *surface);
+    void draw(SDL_Renderer *renderer);
 
     /*!
     * @brief Accessors

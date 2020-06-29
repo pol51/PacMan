@@ -31,7 +31,10 @@ class Game
     int _keyDown{0};
     SDL_Event _lastEvent;
 
+    SDL_Window *_window{NULL};
     SDL_Surface *_screen{NULL};
+
+    SDL_Renderer *_renderer{NULL};
 
     XVector<Sprite> _walls;
     XVector<Sprite> _smallPills;
