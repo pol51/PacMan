@@ -5,31 +5,16 @@
 
 #include "Def.h"
 #include "Directions.h"
+#include "SurfacesManager.h"
 
 class Sprite
 {
 public:
-  /*!
-   * @brief ctors
-   */
-  Sprite(const Sprite& other);
   Sprite(const char* filename);
   Sprite(const char* filename, const unsigned int x, const unsigned int y);
 
-  /*!
-   * @brief dtor
-   */
-  virtual ~Sprite();
-
-  /*!
-   * @brief Draw the sprite to surface
-   * @param surface the destination surface
-   */
   void draw(SDL_Renderer* renderer);
 
-  /*!
-   * @brief Accessors
-   */
   unsigned int width() const { return _src.w; }
   unsigned int height() const { return _src.h; }
   unsigned int left() const { return _pos.x; }
@@ -97,11 +82,9 @@ public:
     _src.y = _imageIndex * SPRITE_HEIGHT;
   }
 
-  const Sprite& operator=(const Sprite& other);
-
 protected:
   EDirection _direction {eLeft};
-  SDL_Surface* _map {NULL};
+  SurfacesManager::SurfacePtr _map;
   SDL_Rect _src {0, 0, SPRITE_WIDTH, SPRITE_HEIGHT};
   SDL_Rect _pos {0, 0, SPRITE_WIDTH, SPRITE_HEIGHT};
   SDL_Rect _dst {0, 0, SPRITE_WIDTH, SPRITE_HEIGHT};

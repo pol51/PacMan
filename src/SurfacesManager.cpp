@@ -2,68 +2,42 @@
 
 #include <SDL3_image/SDL_image.h>
 
-XVector<SurfacesManager::SSurface> SurfacesManager::_surfaces;
+std::map<std::string, std::weak_ptr<SDL_Surface>>& SurfacesManager::surfaces()
+{
+  static std::map<std::string, std::weak_ptr<SDL_Surface>> instance;
+  return instance;
+}
 
-SDL_Surface* SurfacesManager::loadImage(const char* filename)
+SurfacesManager::SurfacePtr SurfacesManager::loadImage(const std::string& filename)
 {
   // lookup for existing surface
-  for (int i = _surfaces.size(); --i >= 0;)
-    if (!strcmp(filename, _surfaces[i].filename))
-    {
-      ++_surfaces[i].count;
-      return _surfaces[i].surface;
-    }
+  auto it = surfaces().find(filename);
+  if (it != surfaces().end())
+    if (auto existing = it->second.lock())
+      return existing;
 
   // load the sdl surface
-  SDL_Surface* Map {NULL};
-  if (strlen(filename))
+  SDL_Surface* raw {nullptr};
+  if (!filename.empty())
   {
-    Map = IMG_Load(filename);
-    if (!Map)
+    raw = IMG_Load(filename.c_str());
+    if (!raw)
     {
-      SDL_Log("Error loading %s", filename);
-      return NULL;
+      SDL_Log("Error loading %s", filename.c_str());
+      raw = SDL_CreateSurface(0, 0, SDL_PIXELFORMAT_RGB48);
     }
-    SDL_Log("SurfacesManager::loadSurface %s", filename);
+    SDL_Log("SurfacesManager::loadSurface %s", filename.c_str());
   }
   else
-    Map = SDL_CreateSurface(0, 0, SDL_PIXELFORMAT_RGB48);
+    raw = SDL_CreateSurface(0, 0, SDL_PIXELFORMAT_RGB48);
 
-  // store the surface
-  _surfaces.push(SSurface());
-  SSurface& NewSurface = _surfaces[_surfaces.size() - 1];
-  NewSurface.count     = 1;
-  const int FilenameLen(strlen(filename));
-  NewSurface.filename = (char*)malloc(FilenameLen * sizeof(char));
-  strcpy(NewSurface.filename, filename);
-  NewSurface.surface = Map;
+  // store with custom deleter
+  auto ptr = SurfacePtr(raw, [filename](SDL_Surface* s) {
+    SDL_Log("SurfacesManager::freeSurface %s", filename.c_str());
+    SDL_DestroySurface(s);
+    surfaces().erase(filename);
+  });
 
-  return Map;
-}
-
-SDL_Surface* SurfacesManager::getSurface(const SDL_Surface* surface)
-{
-  // lookup for existing surface
-  for (int i = _surfaces.size(); --i >= 0;)
-    if (surface == _surfaces[i].surface)
-    {
-      ++_surfaces[i].count;
-      return _surfaces[i].surface;
-    }
-  return NULL;
-}
-
-void SurfacesManager::freeSurface(const SDL_Surface* surface)
-{
-  // retrieve the surface
-  for (int i = _surfaces.size(); --i >= 0;)
-    if (surface == _surfaces[i].surface)
-      if (!--_surfaces[i].count)
-      {
-        SDL_Log("SurfacesManager::freeSurface %s", _surfaces[i].filename);
-        SDL_DestroySurface(_surfaces[i].surface);
-        free(_surfaces[i].filename);
-        _surfaces.remove(i);
-        return;
-      }
+  surfaces()[filename] = ptr;
+  return ptr;
 }
