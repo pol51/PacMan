@@ -20,6 +20,7 @@ protected:
   void createScreen();
   void draw();
   void handleKeys();
+  bool hasWallAt(int x, int y) const;
 
 protected:
   bool _running {false};

@@ -6,27 +6,27 @@
 
 Game::Game(const char* filename)
 {
-  FILE* File(fopen(filename, "r"));
-  if (!File)
+  FILE* file(fopen(filename, "r"));
+  if (!file)
   {
     SDL_Log("Can't read level from %s", filename);
     exit(EXIT_FAILURE);
   }
 
-  char Line[1024], *C;
-  unsigned int X {0}, Y {0};
-  while (fgets(Line, 1024, File))
+  char line[1024], *c;
+  unsigned int x {0}, y {0};
+  while (fgets(line, 1024, file))
   {
-    X = 0;
-    for (C = Line; *C; ++C, ++X)
-      addSprite(*C, X, Y);
-    ++Y;
+    x = 0;
+    for (c = line; *c; ++c, ++x)
+      addSprite(*c, x, y);
+    ++y;
   }
 
-  _width  = X - (Y && *(C - 1) == '\n'); // ignore new-line
-  _heigth = Y;
+  _width  = x - (y && *(c - 1) == '\n'); // ignore new-line
+  _heigth = y;
 
-  fclose(File);
+  fclose(file);
 
   createScreen();
 }
@@ -72,7 +72,7 @@ void Game::addSprite(const char type, const unsigned int x, const unsigned y)
 
 void Game::createScreen()
 {
-  _window = SDL_CreateWindow("PacMan", _width * SPRITE_WIDTH, _heigth * SPRITE_HEIGHT, 0);
+  _window   = SDL_CreateWindow("PacMan", _width * SPRITE_WIDTH, _heigth * SPRITE_HEIGHT, 0);
   _renderer = SDL_CreateRenderer(_window, NULL);
 }
 
@@ -99,20 +99,28 @@ void Game::draw()
   SDL_RenderPresent(_renderer);
 }
 
+bool Game::hasWallAt(int x, int y) const
+{
+  for (int i = _walls.size(); --i >= 0;)
+    if (_walls[i].left() == (unsigned)x && _walls[i].top() == (unsigned)y)
+      return true;
+  return false;
+}
+
 void Game::handleKeys()
 {
-  SDL_Event Event;
-  while (SDL_PollEvent(&Event))
+  SDL_Event event;
+  while (SDL_PollEvent(&event))
   {
-    switch (Event.type)
+    switch (event.type)
     {
       case SDL_EVENT_KEY_DOWN:
-        if ((unsigned int)(Event.key.key - 273) < 5)
+        if ((unsigned int)(event.key.key - 273) < 5)
           _keyDown++;
-        _lastEvent = Event;
+        _lastEvent = event;
         break;
       case SDL_EVENT_KEY_UP:
-        if ((unsigned int)(Event.key.key - 273) < 5)
+        if ((unsigned int)(event.key.key - 273) < 5)
           _keyDown--;
         if (!_keyDown)
           _lastEvent = SDL_Event();
@@ -123,39 +131,46 @@ void Game::handleKeys()
     }
   }
 
+  int px = _pacman.left();
+  int py = _pacman.top();
+
   switch (_lastEvent.key.key)
   {
-    case SDLK_ESCAPE: // exit
+    case SDLK_ESCAPE:
       _running = false;
       break;
-    case SDLK_UP: // up
-      _pacman.moveUp(_pacman.top() > 0 ? SPRITE_HEIGHT : 0);
+    case SDLK_UP:
+      if (py > 0 && !hasWallAt(px, py - SPRITE_HEIGHT))
+        _pacman.moveUp(SPRITE_HEIGHT);
       break;
-    case SDLK_DOWN: // down
-      _pacman.moveDown(_pacman.bottom() < _heigth * SPRITE_HEIGHT ? SPRITE_HEIGHT : 0);
+    case SDLK_DOWN:
+      if (_pacman.bottom() < _heigth * SPRITE_HEIGHT && !hasWallAt(px, py + SPRITE_HEIGHT))
+        _pacman.moveDown(SPRITE_HEIGHT);
       break;
-    case SDLK_RIGHT: // right
-      _pacman.moveRight(_pacman.right() < _width * SPRITE_WIDTH ? SPRITE_WIDTH : 0);
+    case SDLK_RIGHT:
+      if (_pacman.right() < _width * SPRITE_WIDTH && !hasWallAt(px + SPRITE_WIDTH, py))
+        _pacman.moveRight(SPRITE_WIDTH);
       break;
-    case SDLK_LEFT: // left
-      _pacman.moveLeft(_pacman.left() > 0 ? SPRITE_WIDTH : 0);
+    case SDLK_LEFT:
+      if (px > 0 && !hasWallAt(px - SPRITE_WIDTH, py))
+        _pacman.moveLeft(SPRITE_WIDTH);
       break;
   }
 }
 
 void Game::run()
 {
-  Timer T(30);
+  Timer timer(30);
 
   _running = true;
   while (_running)
   {
-    T.Start();
+    timer.Start();
 
     handleKeys();
     draw();
 
-    while (!T.IsFPSReached())
+    while (!timer.IsFPSReached())
       ;
   }
 }
