@@ -9,5 +9,4 @@ typedef enum Direction
   eDown
 } EDirection;
 
-
 #endif
