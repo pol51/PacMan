@@ -118,8 +118,38 @@ void Game::eatPills()
     if (_bigPills[i].left() == (unsigned)px && _bigPills[i].top() == (unsigned)py)
     {
       _bigPills.remove(i);
+      _powerUpFrames = 30 * 10; // 10 seconds at 30 fps
       break;
     }
+}
+
+void Game::checkGhosts()
+{
+  if (_powerUpFrames > 0)
+    --_powerUpFrames;
+
+  if (_pacman.isInMove())
+    return;
+
+  int px = _pacman.left();
+  int py = _pacman.top();
+
+  Sprite* ghosts[] = {&_blueGhost, &_orangeGhost, &_pinkGhost, &_redGhost};
+  for (Sprite* ghost : ghosts)
+  {
+    if (!ghost->isVisible())
+      continue;
+    if (ghost->left() != (unsigned)px || ghost->top() != (unsigned)py)
+      continue;
+
+    if (_powerUpFrames > 0)
+      ghost->setVisible(false);
+    else
+    {
+      _pacman.setVisible(false);
+      _running = false;
+    }
+  }
 }
 
 bool Game::hasWallAt(int x, int y) const
@@ -191,6 +221,7 @@ void Game::run()
     timer.Start();
 
     eatPills();
+    checkGhosts();
     handleKeys();
     draw();
 

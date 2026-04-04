@@ -23,6 +23,8 @@ public:
   unsigned int bottom() const { return _pos.y + _src.h; }
 
   bool isInMove() const { return _pos.x != _dst.x || _pos.y != _dst.y; }
+  bool isVisible() const { return _visible; }
+  void setVisible(bool visible) { _visible = visible; }
 
   void setDirection(const EDirection direction)
   {
@@ -91,6 +93,7 @@ protected:
   unsigned short int _imageCount {1};
   unsigned short int _imageIndex {0};
   short _imageInc {1};
+  bool _visible {true};
 
 public:
   static const Sprite null;

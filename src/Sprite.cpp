@@ -18,6 +18,9 @@ Sprite::Sprite(const char* filename, const unsigned int x, const unsigned int y)
 
 void Sprite::draw(SDL_Renderer* renderer)
 {
+  if (!_visible)
+    return;
+
   if (_pos.x < _dst.x)
     _pos.x += _src.w >> 3;
   if (_pos.x > _dst.x)

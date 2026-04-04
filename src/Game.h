@@ -21,6 +21,7 @@ protected:
   void draw();
   void handleKeys();
   void eatPills();
+  void checkGhosts();
   bool hasWallAt(int x, int y) const;
 
 protected:
@@ -38,6 +39,8 @@ protected:
   XVector<Sprite> _walls;
   XVector<Sprite> _smallPills;
   XVector<Sprite> _bigPills;
+  int _powerUpFrames {0};
+
   Sprite _pacman      = Sprite::null;
   Sprite _blueGhost   = Sprite::null;
   Sprite _orangeGhost = Sprite::null;
