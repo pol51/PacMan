@@ -23,6 +23,14 @@ public:
   unsigned int bottom() const { return _pos.y + _src.h; }
 
   bool isInMove() const { return _pos.x != _dst.x || _pos.y != _dst.y; }
+  bool overlaps(const Sprite& other) const
+  {
+    return _pos.x < other._pos.x + other._src.w && _pos.x + _src.w > other._pos.x &&
+           _pos.y < other._pos.y + other._src.h && _pos.y + _src.h > other._pos.y;
+  }
+  EDirection direction() const { return _direction; }
+  int tileX() const { return _pos.x / SPRITE_WIDTH; }
+  int tileY() const { return _pos.y / SPRITE_HEIGHT; }
   bool isVisible() const { return _visible; }
   void setVisible(bool visible) { _visible = visible; }
 

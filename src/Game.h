@@ -1,6 +1,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
+#include "Ghost.h"
 #include "Sprite.h"
 #include "XVector.h"
 
@@ -20,9 +21,13 @@ protected:
   void createScreen();
   void draw();
   void handleKeys();
+  void movePacman();
   void eatPills();
   void checkGhosts();
+  void moveGhosts();
+  void updateGhostMode();
   bool hasWallAt(int x, int y) const;
+  static bool hasWallAtStatic(int x, int y);
 
 protected:
   bool _running {false};
@@ -30,8 +35,7 @@ protected:
   unsigned int _width {0};
   unsigned int _heigth {0};
 
-  int _keyDown {0};
-  SDL_Event _lastEvent;
+  EDirection _nextDirection {eLeft};
 
   SDL_Window* _window {NULL};
   SDL_Renderer* _renderer {NULL};
@@ -40,12 +44,13 @@ protected:
   XVector<Sprite> _smallPills;
   XVector<Sprite> _bigPills;
   int _powerUpFrames {0};
+  int _modeFrames {0};
+  int _modeIndex {0};
 
-  Sprite _pacman      = Sprite::null;
-  Sprite _blueGhost   = Sprite::null;
-  Sprite _orangeGhost = Sprite::null;
-  Sprite _pinkGhost   = Sprite::null;
-  Sprite _redGhost    = Sprite::null;
+  Sprite _pacman = Sprite::null;
+  Ghost* _ghosts[4] {nullptr, nullptr, nullptr, nullptr};
+
+  static Game* _instance;
 };
 
 #endif
