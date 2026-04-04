@@ -73,7 +73,7 @@ void Game::addSprite(const char type, const unsigned int x, const unsigned y)
 void Game::createScreen()
 {
   _window   = SDL_CreateWindow("PacMan", _width * SPRITE_WIDTH, _heigth * SPRITE_HEIGHT, 0);
-  _renderer = SDL_CreateRenderer(_window, NULL);
+  _renderer = SDL_CreateRenderer(_window, nullptr);
 }
 
 void Game::draw()
@@ -97,6 +97,29 @@ void Game::draw()
   _pacman.incStep();
 
   SDL_RenderPresent(_renderer);
+}
+
+void Game::eatPills()
+{
+  if (_pacman.isInMove())
+    return;
+
+  int px = _pacman.left();
+  int py = _pacman.top();
+
+  for (int i = _smallPills.size(); --i >= 0;)
+    if (_smallPills[i].left() == (unsigned)px && _smallPills[i].top() == (unsigned)py)
+    {
+      _smallPills.remove(i);
+      break;
+    }
+
+  for (int i = _bigPills.size(); --i >= 0;)
+    if (_bigPills[i].left() == (unsigned)px && _bigPills[i].top() == (unsigned)py)
+    {
+      _bigPills.remove(i);
+      break;
+    }
 }
 
 bool Game::hasWallAt(int x, int y) const
@@ -167,6 +190,7 @@ void Game::run()
   {
     timer.Start();
 
+    eatPills();
     handleKeys();
     draw();
 
